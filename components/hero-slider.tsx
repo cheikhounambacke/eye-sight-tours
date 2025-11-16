@@ -14,7 +14,7 @@ const sliderImages = [
       "Profitez d’un hôtel 5★ à quelques pas de la Mosquée du Prophète ﷺ.",
   },
   {
-    src: "/shuhada-hotel.jpg",
+    src: "/Shuhada-hotel.jpg",
     alt: "Al Shohada Hotel Makkah",
     title: "Hôtels Sélectionnés Avec Soin",
     subtitle:
