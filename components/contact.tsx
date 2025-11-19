@@ -2,6 +2,7 @@
 
 import type React from "react";
 import { useState } from "react";
+import toast from "react-hot-toast"; // <-- NEW
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Phone, Mail, MapPin } from "lucide-react";
@@ -12,12 +13,15 @@ export function Contact() {
     lastName: "",
     email: "",
     phone: "",
+    travelType: "",
     package: "",
     travelers: "",
     date: "",
     room: "",
     message: "",
   });
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -28,20 +32,46 @@ export function Contact() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      package: "",
-      travelers: "",
-      date: "",
-      room: "",
-      message: "",
+    setLoading(true);
+
+    const sendPromise = fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    }).then(async (res) => {
+      const result = await res.json();
+      if (!result.success) throw new Error("Erreur");
     });
+
+    toast.promise(sendPromise, {
+      loading: "Envoi de votre demande...",
+      success: "Votre message a été envoyé avec succès !",
+      error: "Une erreur est survenue. Veuillez réessayer.",
+    });
+
+    try {
+      await sendPromise;
+
+      // Reset form after success
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        travelType: "",
+        package: "",
+        travelers: "",
+        date: "",
+        room: "",
+        message: "",
+      });
+    } catch (e) {
+      console.error("Erreur d'envoi:", e);
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -53,12 +83,11 @@ export function Contact() {
             Contactez Eyesight Tours
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Prêt pour votre voyage spirituel ? Contactez-nous dès aujourd’hui et
-            notre équipe vous guidera !
+            Prêt pour votre voyage spirituel (Umrah ou Hajj) ? Contactez-nous
+            dès aujourd’hui et notre équipe vous assistera !
           </p>
         </div>
 
-        {/* Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* LEFT SIDE — Contact Info + Map */}
           <div className="space-y-10">
@@ -68,24 +97,20 @@ export function Contact() {
 
             {/* Phone */}
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-[#D4AF37]/10 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-[#D4AF37]/10 rounded-lg flex items-center justify-center">
                 <Phone className="w-6 h-6 text-[#D4AF37]" />
               </div>
               <div>
                 <h4 className="font-semibold text-[#0A2740]">Téléphone</h4>
                 <p className="text-gray-700">
-                  +221 77 605 39 09
-                  <br />
-                  +221 33 870 51 73
-                  <br />
-                  +221 77 633 89 92
+                  +221 78 103 06 06 <br /> +221 77 605 39 09
                 </p>
               </div>
             </div>
 
             {/* Email */}
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-[#D4AF37]/10 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-[#D4AF37]/10 rounded-lg flex items-center justify-center">
                 <Mail className="w-6 h-6 text-[#D4AF37]" />
               </div>
               <div>
@@ -96,20 +121,18 @@ export function Contact() {
 
             {/* Address */}
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-[#D4AF37]/10 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-[#D4AF37]/10 rounded-lg flex items-center justify-center">
                 <MapPin className="w-6 h-6 text-[#D4AF37]" />
               </div>
               <div>
                 <h4 className="font-semibold text-[#0A2740]">Adresse</h4>
                 <p className="text-gray-700">
-                  5, Rue Caillé x Dagorne
-                  <br />
-                  Place Kermel, Dakar
+                  5, Rue Caillé x Dagorne <br /> Place Kermel, Dakar
                 </p>
               </div>
             </div>
 
-            {/* MAP */}
+            {/* Map */}
             <div className="rounded-xl overflow-hidden border border-[#D4AF37]/30 shadow-md">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3859.885699480836!2d-17.442865424891327!3d14.666269375267662!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfcf9c2e6df8b14f%3A0x72f34b91bfdd07c7!2s5%20Rue%20Caill%C3%A9%2C%20Dakar%2C%20S%C3%A9n%C3%A9gal!5e0!3m2!1sfr!2ssn!4v1731612780000!5m2!1sfr!2ssn"
@@ -118,12 +141,11 @@ export function Contact() {
                 style={{ border: 0 }}
                 loading="lazy"
                 allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
+              />
             </div>
           </div>
 
-          {/* RIGHT SIDE — Booking Form */}
+          {/* RIGHT SIDE — Form */}
           <form
             onSubmit={handleSubmit}
             className="space-y-6 bg-white p-8 rounded-xl border border-[#D4AF37]/30 shadow-md"
@@ -131,29 +153,25 @@ export function Contact() {
             {/* BASIC INFO */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-[#0A2740] mb-2">
+                <label className="text-sm font-medium text-[#0A2740] mb-2 block">
                   Prénom
                 </label>
                 <Input
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
-                  placeholder="Votre prénom"
-                  className="border border-[#D4AF37]/40"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#0A2740] mb-2">
+                <label className="text-sm font-medium text-[#0A2740] mb-2 block">
                   Nom
                 </label>
                 <Input
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  placeholder="Votre nom"
-                  className="border border-[#D4AF37]/40"
                   required
                 />
               </div>
@@ -161,7 +179,7 @@ export function Contact() {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-[#0A2740] mb-2">
+              <label className="text-sm font-medium text-[#0A2740] mb-2 block">
                 Email
               </label>
               <Input
@@ -169,55 +187,82 @@ export function Contact() {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="exemple@gmail.com"
-                className="border border-[#D4AF37]/40"
                 required
               />
             </div>
 
             {/* Phone */}
             <div>
-              <label className="block text-sm font-medium text-[#0A2740] mb-2">
-                Numéro de téléphone
+              <label className="text-sm font-medium text-[#0A2740] mb-2 block">
+                Téléphone
               </label>
               <Input
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                placeholder="+221 XX XXX XX XX"
-                className="border border-[#D4AF37]/40"
                 required
               />
             </div>
 
+            {/* TRAVEL TYPE */}
+            <div>
+              <label className="text-sm font-medium text-[#0A2740] mb-2 block">
+                Type de voyage
+              </label>
+              <select
+                name="travelType"
+                value={formData.travelType}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-md border border-[#D4AF37]/40"
+                required
+              >
+                <option value="">Sélectionnez</option>
+                <option value="Umrah">Umrah</option>
+                <option value="Hajj">Hajj</option>
+              </select>
+            </div>
+
             {/* PACKAGE */}
             <div>
-              <label className="block text-sm font-medium text-[#0A2740] mb-2">
+              <label className="text-sm font-medium text-[#0A2740] mb-2 block">
                 Choix du Forfait
               </label>
               <select
                 name="package"
                 value={formData.package}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-md border border-[#D4AF37]/40 bg-white text-[#0A2740] focus:ring-2 focus:ring-[#D4AF37]"
+                className="w-full px-4 py-3 rounded-md border border-[#D4AF37]/40"
                 required
               >
                 <option value="">Sélectionnez un forfait</option>
-                <option value="Standard – 1.500.000 FCFA">
-                  Standard – 1.500.000 FCFA
+
+                {/* UMRAH PACKAGES */}
+                <option value="Umrah - Standard – 1.500.000 FCFA">
+                  Umrah – Pack Standard – 1.500.000 FCFA
                 </option>
-                <option value="Confort – 1.900.000 FCFA">
-                  Confort – 1.900.000 FCFA
+                <option value="Umrah - Standard Plus – 1.650.000 FCFA">
+                  Umrah – Pack Standard Plus – 1.650.000 FCFA
                 </option>
-                <option value="VIP – 2.400.000 FCFA">
-                  VIP – 2.400.000 FCFA
+                <option value="Umrah - Confort – 1.900.000 FCFA">
+                  Umrah – Pack Confort – 1.900.000 FCFA
+                </option>
+                <option value="Umrah - VIP – 2.400.000 FCFA">
+                  Umrah – Pack VIP – 2.400.000 FCFA
+                </option>
+
+                {/* HAJJ PACKAGES */}
+                <option value="Hajj 2026 – Départ Sénégal – 5.300.000 FCFA">
+                  Hajj 2026 – Départ Sénégal – 5.300.000 FCFA
+                </option>
+                <option value="Hajj 2026 – Départ Paris – 7.200 €">
+                  Hajj 2026 – Départ Paris – 7.200 €
                 </option>
               </select>
             </div>
 
             {/* Travelers */}
             <div>
-              <label className="block text-sm font-medium text-[#0A2740] mb-2">
+              <label className="text-sm font-medium text-[#0A2740] mb-2 block">
                 Nombre de voyageurs
               </label>
               <Input
@@ -225,15 +270,13 @@ export function Contact() {
                 type="number"
                 value={formData.travelers}
                 onChange={handleChange}
-                placeholder="1, 2, 3..."
-                className="border border-[#D4AF37]/40"
                 required
               />
             </div>
 
             {/* Date */}
             <div>
-              <label className="block text-sm font-medium text-[#0A2740] mb-2">
+              <label className="text-sm font-medium text-[#0A2740] mb-2 block">
                 Date de départ souhaitée
               </label>
               <Input
@@ -241,24 +284,23 @@ export function Contact() {
                 type="date"
                 value={formData.date}
                 onChange={handleChange}
-                className="border border-[#D4AF37]/40"
                 required
               />
             </div>
 
             {/* Room */}
             <div>
-              <label className="block text-sm font-medium text-[#0A2740] mb-2">
+              <label className="text-sm font-medium text-[#0A2740] mb-2 block">
                 Type de chambre
               </label>
               <select
                 name="room"
                 value={formData.room}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-md border border-[#D4AF37]/40 bg-white text-[#0A2740] focus:ring-2 focus:ring-[#D4AF37]"
+                className="w-full px-4 py-3 rounded-md border border-[#D4AF37]/40"
                 required
               >
-                <option value="">Sélectionnez une option</option>
+                <option value="">Sélectionnez</option>
                 <option value="Double (2 personnes)">
                   Double (2 personnes)
                 </option>
@@ -273,25 +315,28 @@ export function Contact() {
 
             {/* Message */}
             <div>
-              <label className="block text-sm font-medium text-[#0A2740] mb-2">
+              <label className="text-sm font-medium text-[#0A2740] mb-2 block">
                 Message (optionnel)
               </label>
               <textarea
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                placeholder="Informations supplémentaires (facultatif)"
-                className="w-full px-4 py-2 rounded-md border border-[#D4AF37]/40 focus:ring-2 focus:ring-[#D4AF37]"
                 rows={5}
+                className="w-full px-4 py-2 rounded-md border border-[#D4AF37]/40"
+                placeholder="Informations supplémentaires"
               />
             </div>
 
             {/* Submit */}
             <Button
               type="submit"
+              disabled={loading}
               className="w-full bg-[#D4AF37] hover:bg-[#b8942f] text-[#0A2740] font-semibold py-3 text-lg shadow-md"
             >
-              Envoyer la Demande de Réservation
+              {loading
+                ? "Envoi en cours..."
+                : "Envoyer la Demande de Réservation"}
             </Button>
           </form>
         </div>

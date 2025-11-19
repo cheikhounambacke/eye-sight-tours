@@ -12,7 +12,7 @@ export function About() {
             src="/about.jpeg"
             alt="Eyesight Tours – Umrah"
             fill
-            className="object-cover object-top"
+            className="object-cover object-center"
           />
           <div className="absolute inset-0 bg-black/10"></div>
         </div>
@@ -47,11 +47,13 @@ export function About() {
           <div className="grid grid-cols-2 gap-6 mt-8">
             <div className="p-4 bg-[#0A2740]/5 rounded-lg border border-[#D4AF37] shadow-sm">
               <h4 className="font-bold text-[#0A2740]">+ 5 ans d’expérience</h4>
-              <p className="text-gray-600 text-sm">Dans l’organisation Umrah</p>
+              <p className="text-gray-600 text-sm">
+                Dans l’organisation de voyages
+              </p>
             </div>
 
             <div className="p-4 bg-[#0A2740]/5 rounded-lg border border-[#D4AF37] shadow-sm">
-              <h4 className="font-bold text-[#0A2740]">1000+ pèlerins</h4>
+              <h4 className="font-bold text-[#0A2740]">1000+ voyageurs</h4>
               <p className="text-gray-600 text-sm">Déjà accompagnés</p>
             </div>
 

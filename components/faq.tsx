@@ -14,42 +14,52 @@ export function FAQ() {
     {
       question: "Qu’est-ce qui est inclus dans les formules Umrah ?",
       answer:
-        "Tous nos packs incluent : Billet d’avion A/R, hébergement à La Mecque et Médine, transports privés entre les villes saintes, guide religieux expérimenté, visa + assurance.",
+        "Tous nos packs Umrah incluent : Billet d’avion A/R, hôtels à La Mecque et Médine, transports privés entre les villes saintes, guide religieux expérimenté, visa + assurance. Les repas dépendent du pack choisi (petit déjeuner, demi-pension).",
+    },
+    {
+      question: "Qu’est-ce qui est inclus dans les formules Hajj 2026 ?",
+      answer:
+        "Nos packs Hajj incluent : Hébergement, pension complète ou demi-pension selon le pack, billet d’avion A/R, visa Hajj, transferts complets, et services sur les lieux saints (dont Masher/Mina pour le départ Paris).",
     },
     {
       question: "Quels sont les prix des formules Umrah 2025 & 2026 ?",
       answer:
-        "Pack Standard : 1 500 000 FCFA · Pack Confort : 1 900 000 FCFA · Pack VIP : 2 400 000 FCFA.",
+        "Pack Standard : 1 500 000 FCFA · Pack Standard Plus : 1 650 000 FCFA · Pack Confort : 1 900 000 FCFA · Pack VIP : 2 400 000 FCFA.",
     },
     {
-      question: "Les hôtels sont-ils près de la mosquée ?",
+      question: "Quels sont les prix du Hajj 2026 ?",
       answer:
-        "Oui. Tous nos hôtels sont situés à proximité de Masjid al-Haram et Masjid an-Nabawi, dont Swissôtel Al Maqam (VIP), Al Shohada (Confort) et Voco Makkah (Standard).",
+        "Hajj 2026 – Départ Sénégal : 5 300 000 FCFA (pension complète) · Hajj 2026 – Départ Paris : 7 200 € (demi-pension + Masher/Mina).",
     },
     {
-      question: "Le visa Umrah est-il inclus ?",
+      question: "Les hôtels sont-ils bien situés ?",
       answer:
-        "Oui, le visa Umrah ainsi que l’assurance sont inclus dans toutes nos formules.",
+        "Oui. Pour l’Umrah, nos hôtels sont proches du Masjid al-Haram et du Masjid an-Nabawi (Swissôtel Al Maqam, Al Shohada, Voco Makkah…). Pour le Hajj, l’hébergement officiel est organisé selon les standards saoudiens.",
     },
     {
-      question: "Dois-je verser un acompte pour réserver ?",
+      question: "Le visa est-il inclus ?",
       answer:
-        "Oui, un acompte est requis pour confirmer votre place. Le reste peut être payé avant le départ.",
+        "Oui. Le visa Umrah et le visa Hajj sont inclus ainsi que l’assurance obligatoire.",
+    },
+    {
+      question: "Puis-je payer en plusieurs tranches ?",
+      answer:
+        "Oui. Nous offrons la possibilité de payer l’Umrah et le Hajj en plusieurs tranches selon les conditions établies.",
     },
     {
       question: "Puis-je voyager en famille ?",
       answer:
-        "Bien sûr. Nos packs sont conçus pour les familles, les couples, et les groupes. Les enfants sont acceptés.",
+        "Oui. Nos packs sont adaptés aux familles, couples, groupes et personnes âgées. Les enfants sont acceptés.",
     },
     {
       question: "Avez-vous un guide pendant tout le voyage ?",
       answer:
-        "Oui. Un guide religieux expérimenté accompagne le groupe du début à la fin du séjour.",
+        "Oui. Un guide religieux expérimenté accompagne les pèlerins du début à la fin pour l’Umrah et pour le Hajj.",
     },
     {
-      question: "Comment puis-je réserver ma place ?",
+      question: "Comment réserver ?",
       answer:
-        "Vous pouvez nous contacter directement via WhatsApp ou remplir le formulaire sur notre site dans la section Contact.",
+        "Vous pouvez nous contacter via WhatsApp ou remplir le formulaire dans la section Contact. Un conseiller vous guidera.",
     },
   ];
 
@@ -63,7 +73,7 @@ export function FAQ() {
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Retrouvez les réponses aux questions les plus fréquentes sur nos
-            voyages Umrah.
+            voyages Umrah & Hajj.
           </p>
         </div>
 

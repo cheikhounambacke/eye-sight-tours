@@ -180,7 +180,7 @@ export function Header() {
 
       {/* Floating WhatsApp Button */}
       <a
-        href="https://wa.me/221776053909"
+        href="https://wa.me/221781030606"
         target="_blank"
         className="fixed bottom-6 right-6 bg-green-500 shadow-xl hover:scale-110 transition transform p-4 rounded-full z-50"
       >

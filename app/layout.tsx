@@ -1,5 +1,7 @@
 import type React from "react";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
+
 import { Poppins } from "next/font/google";
 
 export const poppins = Poppins({
@@ -58,7 +60,35 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={poppins.className}>{children}</body>
+      <body className={poppins.className}>
+        {children}
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: "#0A2740",
+              color: "white",
+              borderRadius: "10px",
+              padding: "12px 16px",
+              border: "1px solid #D4AF37",
+              fontSize: "15px",
+              fontWeight: 500,
+            },
+            success: {
+              iconTheme: {
+                primary: "#D4AF37",
+                secondary: "#0A2740",
+              },
+            },
+            error: {
+              iconTheme: {
+                primary: "#D9534F",
+                secondary: "#0A2740",
+              },
+            },
+          }}
+        />
+      </body>
     </html>
   );
 }
