@@ -30,11 +30,6 @@ export function Gallery() {
       src: "/gallery-video-3.mp4",
       title: "Moments de spiritualité",
     },
-    {
-      type: "image",
-      src: "/pilgrims-tawaf-circumambulating.jpg",
-      title: "Tawaf autour de la Kaaba",
-    },
   ];
 
   const filteredGallery =
