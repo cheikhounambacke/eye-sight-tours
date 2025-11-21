@@ -1,158 +1,127 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
-const sliderImages = [
+const sliderData = [
   {
-    src: "/alritz-hotel.jpg",
-    alt: "Al Ritz Al Madinah Hotel",
-    title: "Séjour Confort à Médine",
-    subtitle:
-      "Profitez d’un hôtel 5★ à quelques pas de la Mosquée du Prophète ﷺ.",
+    title: "Voyages Organisés sur Mesure",
+    subtitle: "Découvrez le monde avec élégance, confort et sécurité.",
   },
   {
-    src: "/Shuhada-hotel.jpg",
-    alt: "Al Shohada Hotel Makkah",
-    title: "Hôtels Sélectionnés Avec Soin",
-    subtitle:
-      "Un confort exceptionnel pour un voyage spirituel en toute sérénité.",
+    title: "Tourisme Religieux – Hajj & Umrah",
+    subtitle: "Un accompagnement complet pour vos voyages spirituels.",
   },
   {
-    src: "/SWISS-hotel.jpg",
-    alt: "Swissotel Al Maqam Makkah",
-    title: "Vivez La Kaaba Depuis Votre Fenêtre",
-    subtitle:
-      "Des chambres luxueuses face au Haram — une expérience qui marque une vie.",
+    title: "Événementiel Professionnel",
+    subtitle: "Organisation haut de gamme pour vos événements.",
   },
   {
-    src: "/penisula-hotel.jpg",
-    alt: "Madinah Luxury Room",
-    title: "Un Confort Qui Inspire La Sérénité",
-    subtitle: "Rechargez votre âme dans des espaces modernes et apaisants.",
-  },
-  {
-    src: "/swissotel.jpg",
-    alt: "Kaaba View – Luxury Room",
-    title: "Votre Umrah, Votre Meilleur Souvenir",
-    subtitle:
-      "Nous organisons votre voyage, vous savourez chaque instant sacré.",
+    title: "Team Building d’Entreprise",
+    subtitle: "Renforcez la cohésion de votre équipe.",
   },
 ];
 
 export function HeroSlider() {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [current, setCurrent] = useState(0);
+  const [typedText, setTypedText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Slow, smooth typing
+  const typingSpeed = 160; // per letter
+  const deletingSpeed = 110; // per letter
+  const fullPause = 1200; // pause when full text is shown
+  const emptyPause = 500; // pause before typing next title
+
+  const title = sliderData[current].title;
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-    }, 4500);
-    return () => clearInterval(interval);
-  }, []);
+    let timeout: NodeJS.Timeout;
 
-  const handleViewPackages = () => {
-    document.getElementById("packages")?.scrollIntoView({ behavior: "smooth" });
-  };
+    if (!isDeleting && typedText === title) {
+      // FULL title is typed → pause → start deleting
+      timeout = setTimeout(() => setIsDeleting(true), fullPause);
+    } else if (isDeleting && typedText === "") {
+      // FULL delete → go to next slide → type next title
+      timeout = setTimeout(() => {
+        setIsDeleting(false);
+        setCurrent((prev) => (prev + 1) % sliderData.length);
+      }, emptyPause);
+    } else {
+      // Typing forward
+      if (!isDeleting) {
+        timeout = setTimeout(() => {
+          setTypedText(title.slice(0, typedText.length + 1));
+        }, typingSpeed);
+      }
 
-  const handleLearnMore = () => {
-    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-  };
+      // Deleting backward
+      if (isDeleting && typedText !== "") {
+        timeout = setTimeout(() => {
+          setTypedText((prev) => prev.slice(0, -1));
+        }, deletingSpeed);
+      }
+    }
 
-  const slide = sliderImages[currentSlide];
+    return () => clearTimeout(timeout);
+  }, [typedText, isDeleting, title]);
 
   return (
-    <div className="relative w-full h-96 sm:h-[500px] md:h-[600px] overflow-hidden shadow-2xl">
-      {/* Slides */}
-      <div className="relative w-full h-full">
-        {sliderImages.map((image, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-              index === currentSlide ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <Image
-              src={image.src}
-              alt={image.alt}
-              fill
-              priority={index === 0}
-              className="object-cover bg-black"
-            />
-          </div>
-        ))}
-      </div>
+    <div className="relative w-full h-[420px] sm:h-[520px] overflow-hidden bg-gradient-to-br from-[#0A2740] via-[#0C3A63] to-[#0A2740] flex items-center justify-center text-center px-6">
+      {/* Gold Glow */}
+      <motion.div
+        key={current + "-circle"}
+        initial={{ scale: 0.6, opacity: 0 }}
+        animate={{ scale: 1.1, opacity: 0.18 }}
+        transition={{ duration: 1.2 }}
+        className="absolute top-20 -right-20 w-72 h-72 bg-[#D4AF37] rounded-full blur-3xl opacity-20"
+      />
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0A2740]/60 via-black/40 to-black/60" />
+      {/* Wave Shape */}
+      <motion.div
+        initial={{ y: 40, opacity: 0 }}
+        animate={{ y: 0, opacity: 0.3 }}
+        transition={{ duration: 1.3 }}
+        className="absolute bottom-0 left-0 w-full"
+      >
+        <svg viewBox="0 0 1440 320" className="w-full fill-blue-600/20">
+          <path d="M0,192L60,170.7C120,149,240,107,360,80C480,53,600,43,720,64C840,85,960,139,1080,144C1200,149,1320,107,1380,85.3L1440,64V320H0Z" />
+        </svg>
+      </motion.div>
 
-      {/* Content (Animated) */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <motion.div
-          key={currentSlide}
-          initial={{ opacity: 0, y: 35 }}
+      {/* Content */}
+      <div className="relative z-10 max-w-2xl">
+        <h1 className="text-white text-3xl sm:text-5xl font-bold mb-4 min-h-[72px]">
+          {typedText}
+          <span className="border-r-2 ml-1 border-[#D4AF37] animate-pulse"></span>
+        </h1>
+
+        <motion.p
+          key={current + "-subtitle"}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: "easeOut" }}
-          className="text-center px-4 max-w-2xl"
+          transition={{ duration: 0.8 }}
+          className="text-gray-200 text-lg sm:text-xl mb-8"
         >
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3"
+          {sliderData[current].subtitle}
+        </motion.p>
+
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button
+            size="lg"
+            className="bg-[#D4AF37] hover:bg-[#b8942f] text-[#0A2740] font-semibold shadow-xl"
           >
-            {slide.title}
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-lg sm:text-xl text-gray-200 mb-6"
+            Voir nos services
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/20 transition font-semibold"
           >
-            {slide.subtitle}
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45, duration: 0.8 }}
-            className="flex flex-col sm:flex-row gap-3 justify-center"
-          >
-            <Button
-              onClick={handleViewPackages}
-              size="lg"
-              className="bg-[#D4AF37] hover:bg-[#b8942f] text-[#0A2740] font-semibold shadow-xl"
-            >
-              Voir nos formules
-            </Button>
-
-            <Button
-              onClick={handleLearnMore}
-              size="lg"
-              variant="outline"
-              className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/20 hover:text-white transition font-semibold"
-            >
-              Nous contacter
-            </Button>
-          </motion.div>
-        </motion.div>
-      </div>
-
-      {/* Dots */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-        {sliderImages.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              index === currentSlide
-                ? "bg-[#D4AF37] w-8"
-                : "bg-[#D4AF37]/40 hover:bg-[#D4AF37]/70"
-            }`}
-          />
-        ))}
+            Nous contacter
+          </Button>
+        </div>
       </div>
     </div>
   );
