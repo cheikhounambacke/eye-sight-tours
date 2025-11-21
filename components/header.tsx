@@ -1,25 +1,53 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
-import Image from "next/image";
+import {
+  Menu,
+  X,
+  Home,
+  Info,
+  Package,
+  Image as ImageIcon,
+  Phone,
+  ChevronDown,
+  Plane,
+  Users,
+  Shield,
+  Handshake,
+  PartyPopper,
+  Building,
+} from "lucide-react";
 
-export function Header() {
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
+
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+
+export function Header({ solid = false }) {
+  const router = useRouter();
+  const path = usePathname();
+
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [scrollProgress, setScrollProgress] = useState(0);
 
+  // ----- SCROLL BEHAVIOR ONLY ON HOME PAGE -----
   useEffect(() => {
+    if (path !== "/") return; // Only highlight when home page
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
 
-      // scroll indicator
       const total = document.body.scrollHeight - window.innerHeight;
-      const progress = (window.scrollY / total) * 100;
-      setScrollProgress(progress);
+      setScrollProgress((window.scrollY / total) * 100);
 
-      // section highlight
       const sections = [
         "home",
         "about",
@@ -32,49 +60,80 @@ export function Header() {
 
       for (const sec of sections) {
         const el = document.getElementById(sec);
-        if (el) {
-          const offsetTop = el.offsetTop - 200;
-          if (window.scrollY >= offsetTop) current = sec;
-        }
+        if (el && window.scrollY >= el.offsetTop - 200) current = sec;
       }
+
       setActiveSection(current);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [path]);
 
-  const scrollToSection = (id: string) => {
+  // ----- SMART NAVIGATION -----
+  const navigateTo = (id: string) => {
+    // ⭐ ACCUEIL
     if (id === "home") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      const element = document.getElementById(id);
-      element?.scrollIntoView({ behavior: "smooth" });
+      if (path === "/") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        router.push("/");
+      }
+      setIsOpen(false);
+      return;
     }
+
+    // ⭐ NOS FORMULES
+    if (id === "packages") {
+      if (path === "/") {
+        document
+          .getElementById("packages")
+          ?.scrollIntoView({ behavior: "smooth" });
+      } else {
+        router.push("/?scroll=packages");
+      }
+      setIsOpen(false);
+      return;
+    }
+
+    // ⭐ OTHER HOME SECTIONS
+    if (path === "/") {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      router.push(`/?scroll=${id}`);
+    }
+
     setIsOpen(false);
   };
 
   const navItems = [
-    { label: "Accueil", id: "home" },
-    { label: "À propos", id: "about" },
-    { label: "Nos Formules", id: "packages" },
-    { label: "Galerie", id: "gallery" },
-    { label: "FAQ", id: "faq" },
-    { label: "Contact", id: "contact" },
+    { label: "Accueil", id: "home", icon: <Home className="w-5 h-5" /> },
+    { label: "À propos", id: "about", icon: <Info className="w-5 h-5" /> },
+    {
+      label: "Nos Formules",
+      id: "packages",
+      icon: <Package className="w-5 h-5" />,
+    },
+    {
+      label: "Galerie",
+      id: "gallery",
+      icon: <ImageIcon className="w-5 h-5" />,
+    },
+    { label: "FAQ", id: "faq", icon: <Phone className="w-5 h-5" /> },
   ];
 
   return (
     <>
       <header
         className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-          isScrolled
-            ? "bg-[#0A2740]/95 shadow-xl border-b border-[#D4AF37]/20 backdrop-blur-md h-16"
+          solid || isScrolled
+            ? "bg-[#0A2740] shadow-xl border-b border-[#D4AF37]/20 h-16"
             : "bg-transparent h-20"
         }`}
       >
-        {/* Scroll Progress Bar */}
+        {/* Progress bar */}
         <div
-          className="absolute bottom-0 left-0 h-[3px] bg-[#D4AF37] transition-all duration-150"
+          className="absolute bottom-0 left-0 h-[3px] bg-[#D4AF37]"
           style={{ width: `${scrollProgress}%` }}
         />
 
@@ -82,8 +141,8 @@ export function Header() {
           <div className="flex justify-between items-center w-full">
             {/* Logo */}
             <div
-              className="flex items-center gap-3 flex-shrink-0 cursor-pointer"
-              onClick={() => scrollToSection("home")}
+              className="flex items-center gap-3 cursor-pointer"
+              onClick={() => navigateTo("home")}
             >
               <Image
                 src="/logo.png"
@@ -95,102 +154,133 @@ export function Header() {
             </div>
 
             {/* Desktop Nav */}
-            <nav className="hidden md:flex gap-8 items-center">
+            <nav className="hidden md:flex items-center gap-8">
               {navItems.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className={`relative text-white font-medium transition-colors
-                    ${
-                      activeSection === item.id
-                        ? "text-[#D4AF37]"
-                        : "hover:text-[#D4AF37]"
-                    }
-                  `}
+                  onClick={() => navigateTo(item.id)}
+                  className={`relative text-white font-medium transition-colors ${
+                    activeSection === item.id && path === "/"
+                      ? "text-[#D4AF37]"
+                      : "hover:text-[#D4AF37]"
+                  }`}
                 >
-                  {item.label}
+                  <div className="flex items-center gap-2">
+                    {item.icon}
+                    {item.label}
+                  </div>
+
+                  {/* underline */}
                   <span
-                    className={`absolute left-0 bottom-[-4px] h-[2px] bg-[#D4AF37] transition-all duration-300
-                      ${
-                        activeSection === item.id
-                          ? "w-full"
-                          : "w-0 group-hover:w-full"
-                      }
-                    `}
+                    className={`absolute left-0 bottom-[-4px] h-[2px] bg-[#D4AF37] transition-all duration-300 ${
+                      activeSection === item.id && path === "/"
+                        ? "w-full"
+                        : "w-0"
+                    }`}
                   />
                 </button>
               ))}
 
-              {/* Booking Button */}
+              {/* Dropdown — Nos Services */}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="relative text-white font-medium hover:text-[#D4AF37] flex items-center gap-2">
+                  <Package className="w-5 h-5" />
+                  Nos Services
+                  <ChevronDown className="w-4 h-4" />
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent className="w-60 bg-[#0A2740] border border-[#D4AF37]/30 text-white rounded-xl shadow-xl">
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/services/tourisme-religieux"
+                      className="flex gap-2 p-2 hover:bg-[#D4AF37]/20"
+                    >
+                      <Plane className="w-4 h-4 text-[#D4AF37]" />
+                      Tourisme Religieux
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/services/colonie-de-vacances"
+                      className="flex gap-2 p-2 hover:bg-[#D4AF37]/20"
+                    >
+                      <Users className="w-4 h-4 text-[#D4AF37]" />
+                      Colonie de Vacances
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/services/voyages-organises"
+                      className="flex gap-2 p-2 hover:bg-[#D4AF37]/20"
+                    >
+                      <Plane className="w-4 h-4 text-[#D4AF37]" />
+                      Voyages Organisés
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/services/assurance"
+                      className="flex gap-2 p-2 hover:bg-[#D4AF37]/20"
+                    >
+                      <Shield className="w-4 h-4 text-[#D4AF37]" />
+                      Assurance
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/services/protocole"
+                      className="flex gap-2 p-2 hover:bg-[#D4AF37]/20"
+                    >
+                      <Handshake className="w-4 h-4 text-[#D4AF37]" />
+                      Protocole
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/services/evenementiel"
+                      className="flex gap-2 p-2 hover:bg-[#D4AF37]/20"
+                    >
+                      <PartyPopper className="w-4 h-4 text-[#D4AF37]" />
+                      Événementiel
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/services/team-building"
+                      className="flex gap-2 p-2 hover:bg-[#D4AF37]/20"
+                    >
+                      <Building className="w-4 h-4 text-[#D4AF37]" />
+                      Team Building
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Contact button */}
               <button
-                onClick={() => scrollToSection("contact")}
-                className="bg-[#D4AF37] text-[#0A2740] font-semibold px-5 py-2 rounded-full hover:bg-[#caa032] transition shadow-md"
+                onClick={() => navigateTo("contact")}
+                className="bg-[#D4AF37] text-[#0A2740] font-semibold px-5 py-2 rounded-full hover:bg-[#caa032] transition"
               >
                 Réserver
               </button>
             </nav>
 
-            {/* Mobile Menu Button */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="p-2 rounded-lg text-white hover:bg-[#D4AF37]/20 transition"
-              >
-                {isOpen ? (
-                  <X className="w-6 h-6" />
-                ) : (
-                  <Menu className="w-6 h-6" />
-                )}
-              </button>
-            </div>
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="md:hidden p-2 rounded-lg text-white hover:bg-[#D4AF37]/20 transition"
+            >
+              {isOpen ? <X /> : <Menu />}
+            </button>
           </div>
         </div>
-
-        {/* Mobile Nav */}
-        <div
-          className={`md:hidden overflow-hidden transition-all duration-500 ${
-            isOpen ? "max-h-96" : "max-h-0"
-          }`}
-        >
-          <nav className="pb-4 border-t border-[#D4AF37]/20 pt-4 flex flex-col gap-3 bg-[#0A2740]/95">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className={`text-white py-2 font-medium transition-colors ${
-                  activeSection === item.id
-                    ? "text-[#D4AF37]"
-                    : "hover:text-[#D4AF37]"
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-
-            {/* Mobile Booking Button */}
-            <button
-              onClick={() => scrollToSection("contact")}
-              className="mt-2 bg-[#D4AF37] text-[#0A2740] font-semibold py-2 rounded-md hover:bg-[#caa032] transition"
-            >
-              Réserver Maintenant
-            </button>
-          </nav>
-        </div>
       </header>
-
-      {/* Floating WhatsApp Button */}
-      <a
-        href="https://wa.me/221781030606"
-        target="_blank"
-        className="fixed bottom-6 right-6 bg-green-500 shadow-xl hover:scale-110 transition transform p-4 rounded-full z-50"
-      >
-        <Image
-          src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-          alt="WhatsApp"
-          width={32}
-          height={32}
-        />
-      </a>
     </>
   );
 }
