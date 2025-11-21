@@ -38,9 +38,9 @@ export function Header({ solid = false }) {
   const [activeSection, setActiveSection] = useState("home");
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  // ----- SCROLL BEHAVIOR ONLY ON HOME PAGE -----
+  // ---- SCROLL BEHAVIOR ON HOME PAGE ----
   useEffect(() => {
-    if (path !== "/") return; // Only highlight when home page
+    if (path !== "/") return;
 
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -56,13 +56,13 @@ export function Header({ solid = false }) {
         "faq",
         "contact",
       ];
+
       let current = "home";
 
       for (const sec of sections) {
         const el = document.getElementById(sec);
         if (el && window.scrollY >= el.offsetTop - 200) current = sec;
       }
-
       setActiveSection(current);
     };
 
@@ -70,9 +70,8 @@ export function Header({ solid = false }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [path]);
 
-  // ----- SMART NAVIGATION -----
+  // ---- SMART NAVIGATION ----
   const navigateTo = (id: string) => {
-    // ⭐ ACCUEIL
     if (id === "home") {
       if (path === "/") {
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -83,7 +82,6 @@ export function Header({ solid = false }) {
       return;
     }
 
-    // ⭐ NOS FORMULES
     if (id === "packages") {
       if (path === "/") {
         document
@@ -96,7 +94,6 @@ export function Header({ solid = false }) {
       return;
     }
 
-    // ⭐ OTHER HOME SECTIONS
     if (path === "/") {
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     } else {
@@ -131,7 +128,7 @@ export function Header({ solid = false }) {
             : "bg-transparent h-20"
         }`}
       >
-        {/* Progress bar */}
+        {/* Scroll Progress Bar */}
         <div
           className="absolute bottom-0 left-0 h-[3px] bg-[#D4AF37]"
           style={{ width: `${scrollProgress}%` }}
@@ -153,7 +150,7 @@ export function Header({ solid = false }) {
               />
             </div>
 
-            {/* Desktop Nav */}
+            {/* DESKTOP NAV */}
             <nav className="hidden md:flex items-center gap-8">
               {navItems.map((item) => (
                 <button
@@ -170,7 +167,6 @@ export function Header({ solid = false }) {
                     {item.label}
                   </div>
 
-                  {/* underline */}
                   <span
                     className={`absolute left-0 bottom-[-4px] h-[2px] bg-[#D4AF37] transition-all duration-300 ${
                       activeSection === item.id && path === "/"
@@ -181,9 +177,9 @@ export function Header({ solid = false }) {
                 </button>
               ))}
 
-              {/* Dropdown — Nos Services */}
+              {/* NOS SERVICES DROPDOWN */}
               <DropdownMenu>
-                <DropdownMenuTrigger className="relative text-white font-medium hover:text-[#D4AF37] flex items-center gap-2">
+                <DropdownMenuTrigger className="text-white font-medium hover:text-[#D4AF37] flex items-center gap-2">
                   <Package className="w-5 h-5" />
                   Nos Services
                   <ChevronDown className="w-4 h-4" />
@@ -195,8 +191,8 @@ export function Header({ solid = false }) {
                       href="/services/tourisme-religieux"
                       className="flex gap-2 p-2 hover:bg-[#D4AF37]/20"
                     >
-                      <Plane className="w-4 h-4 text-[#D4AF37]" />
-                      Tourisme Religieux
+                      <Plane className="w-4 h-4 text-[#D4AF37]" /> Tourisme
+                      Religieux
                     </Link>
                   </DropdownMenuItem>
 
@@ -205,8 +201,8 @@ export function Header({ solid = false }) {
                       href="/services/colonie-de-vacances"
                       className="flex gap-2 p-2 hover:bg-[#D4AF37]/20"
                     >
-                      <Users className="w-4 h-4 text-[#D4AF37]" />
-                      Colonie de Vacances
+                      <Users className="w-4 h-4 text-[#D4AF37]" /> Colonie de
+                      Vacances
                     </Link>
                   </DropdownMenuItem>
 
@@ -215,8 +211,8 @@ export function Header({ solid = false }) {
                       href="/services/voyages-organises"
                       className="flex gap-2 p-2 hover:bg-[#D4AF37]/20"
                     >
-                      <Plane className="w-4 h-4 text-[#D4AF37]" />
-                      Voyages Organisés
+                      <Plane className="w-4 h-4 text-[#D4AF37]" /> Voyages
+                      Organisés
                     </Link>
                   </DropdownMenuItem>
 
@@ -225,8 +221,7 @@ export function Header({ solid = false }) {
                       href="/services/assurance"
                       className="flex gap-2 p-2 hover:bg-[#D4AF37]/20"
                     >
-                      <Shield className="w-4 h-4 text-[#D4AF37]" />
-                      Assurance
+                      <Shield className="w-4 h-4 text-[#D4AF37]" /> Assurance
                     </Link>
                   </DropdownMenuItem>
 
@@ -235,8 +230,7 @@ export function Header({ solid = false }) {
                       href="/services/protocole"
                       className="flex gap-2 p-2 hover:bg-[#D4AF37]/20"
                     >
-                      <Handshake className="w-4 h-4 text-[#D4AF37]" />
-                      Protocole
+                      <Handshake className="w-4 h-4 text-[#D4AF37]" /> Protocole
                     </Link>
                   </DropdownMenuItem>
 
@@ -245,7 +239,7 @@ export function Header({ solid = false }) {
                       href="/services/evenementiel"
                       className="flex gap-2 p-2 hover:bg-[#D4AF37]/20"
                     >
-                      <PartyPopper className="w-4 h-4 text-[#D4AF37]" />
+                      <PartyPopper className="w-4 h-4 text-[#D4AF37]" />{" "}
                       Événementiel
                     </Link>
                   </DropdownMenuItem>
@@ -255,14 +249,14 @@ export function Header({ solid = false }) {
                       href="/services/team-building"
                       className="flex gap-2 p-2 hover:bg-[#D4AF37]/20"
                     >
-                      <Building className="w-4 h-4 text-[#D4AF37]" />
-                      Team Building
+                      <Building className="w-4 h-4 text-[#D4AF37]" /> Team
+                      Building
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* Contact button */}
+              {/* CONTACT BUTTON */}
               <button
                 onClick={() => navigateTo("contact")}
                 className="bg-[#D4AF37] text-[#0A2740] font-semibold px-5 py-2 rounded-full hover:bg-[#caa032] transition"
@@ -271,7 +265,7 @@ export function Header({ solid = false }) {
               </button>
             </nav>
 
-            {/* Mobile menu button */}
+            {/* MOBILE MENU TOGGLE */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden p-2 rounded-lg text-white hover:bg-[#D4AF37]/20 transition"
@@ -281,6 +275,101 @@ export function Header({ solid = false }) {
           </div>
         </div>
       </header>
+
+      {/* ---------------- MOBILE MENU ---------------- */}
+      {isOpen && (
+        <div className="md:hidden fixed top-16 left-0 w-full bg-[#0A2740] shadow-xl border-b border-[#D4AF37]/20 z-40">
+          <div className="flex flex-col p-4 text-white space-y-4">
+            {/* Basic nav items */}
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => navigateTo(item.id)}
+                className="flex items-center gap-3 text-lg font-medium py-2 hover:text-[#D4AF37]"
+              >
+                {item.icon}
+                {item.label}
+              </button>
+            ))}
+
+            {/* Nos Services */}
+            <div className="border-t border-[#D4AF37]/30 pt-4">
+              <p className="text-sm uppercase tracking-wide text-gray-300 mb-2">
+                Nos Services
+              </p>
+
+              <div className="flex flex-col gap-3">
+                <Link
+                  href="/services/tourisme-religieux"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 hover:text-[#D4AF37]"
+                >
+                  <Plane className="w-5 h-5 text-[#D4AF37]" /> Tourisme
+                  Religieux
+                </Link>
+
+                <Link
+                  href="/services/colonie-de-vacances"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 hover:text-[#D4AF37]"
+                >
+                  <Users className="w-5 h-5 text-[#D4AF37]" /> Colonie de
+                  Vacances
+                </Link>
+
+                <Link
+                  href="/services/voyages-organises"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 hover:text-[#D4AF37]"
+                >
+                  <Plane className="w-5 h-5 text-[#D4AF37]" /> Voyages Organisés
+                </Link>
+
+                <Link
+                  href="/services/assurance"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 hover:text-[#D4AF37]"
+                >
+                  <Shield className="w-5 h-5 text-[#D4AF37]" /> Assurance
+                </Link>
+
+                <Link
+                  href="/services/protocole"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 hover:text-[#D4AF37]"
+                >
+                  <Handshake className="w-5 h-5 text-[#D4AF37]" /> Protocole
+                </Link>
+
+                <Link
+                  href="/services/evenementiel"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 hover:text-[#D4AF37]"
+                >
+                  <PartyPopper className="w-5 h-5 text-[#D4AF37]" />{" "}
+                  Événementiel
+                </Link>
+
+                <Link
+                  href="/services/team-building"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 hover:text-[#D4AF37]"
+                >
+                  <Building className="w-5 h-5 text-[#D4AF37]" /> Team Building
+                </Link>
+              </div>
+            </div>
+
+            {/* Réserver button */}
+            <button
+              onClick={() => navigateTo("contact")}
+              className="bg-[#D4AF37] text-[#0A2740] font-semibold py-3 rounded-lg mt-4 hover:bg-[#caa032] transition"
+            >
+              Réserver
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
