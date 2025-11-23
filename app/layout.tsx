@@ -2,8 +2,7 @@ import type React from "react";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { Poppins } from "next/font/google";
-import { Whatsapp } from "lucide-react";
-
+import { Analytics } from "@vercel/analytics/next";
 export const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
@@ -112,6 +111,7 @@ export default function RootLayout({
             },
           }}
         />
+        <Analytics />
       </body>
     </html>
   );
